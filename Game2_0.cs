@@ -33,7 +33,7 @@ public class Game2_0 : MonoBehaviour
     private void Update() //очки
     {
         scoreText.text = score + "\n МурМонет";
-        if (score >= shopItems[0].cost)
+       /* if (score >= shopItems[0].cost)
         {
             shopBttns[0].interactable = true;
         }
@@ -57,7 +57,7 @@ public class Game2_0 : MonoBehaviour
         {
             shopBttns[2].interactable = false;
         }
-        
+       */
     }
     public void BuyBttn(int index) // index-кнопка
     {
@@ -74,17 +74,15 @@ public class Game2_0 : MonoBehaviour
         }
         else if (score >= shopItems[index].cost)
         {
-            if (shopItems[index].itsItemPerSec)
-            {
-                shopItems[index].bonusCounter++; // авто-клик
-                score -= shopItems[index].cost;
-            }
-            else
-            { 
-                scoreIncrease += shopItems[index].bonusIncrease; //увеличение клика 
-                score -= shopItems[index].cost;
-            }
+            if (shopItems[index].itsItemPerSec) shopItems[index].bonusCounter++; // авто-клик
+
+            else scoreIncrease += shopItems[index].bonusIncrease; //увеличение клика 
+
+            score -= shopItems[index].cost;
+            if (shopItems[index].needCostMultiplier) shopItems[index].cost *= shopItems[index].costMultiplier; //увеличение стоимости
+            shopItems[index].levelOfItems++;
         }
+    
         else print("Не хватает МурМонет");
         updateCosts();
     }
@@ -151,7 +149,7 @@ public class Item
     [Tooltip("Нужен ли множитель для цены?")]
     public bool needCostMultiplier;
     [Tooltip("Множитель цены")]
-    public float costMultiplier;
+    public int costMultiplier;
     [Space]
     [Tooltip("Товар дает бонус/сек")]
     public bool itsItemPerSec;
