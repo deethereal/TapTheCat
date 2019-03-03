@@ -33,7 +33,7 @@ public class Game2_0 : MonoBehaviour
     private void Update() //очки
     {
         scoreText.text = score + "\n МурМонет";
-       /* if (score >= shopItems[0].cost)
+        if (score >= shopItems[0].cost)
         {
             shopBttns[0].interactable = true;
         }
@@ -49,7 +49,7 @@ public class Game2_0 : MonoBehaviour
         {
             shopBttns[1].interactable = false;
         }
-        if (score >= cost && shopItems[2].bonusCounter > 0)
+        if (score >= cost && shopItems[1].bonusCounter != 0)
         {
             shopBttns[2].interactable = true;
         }
@@ -57,7 +57,7 @@ public class Game2_0 : MonoBehaviour
         {
             shopBttns[2].interactable = false;
         }
-       */
+       
     }
     public void BuyBttn(int index) // index-кнопка
     {
@@ -81,6 +81,7 @@ public class Game2_0 : MonoBehaviour
             score -= shopItems[index].cost;
             if (shopItems[index].needCostMultiplier) shopItems[index].cost *= shopItems[index].costMultiplier; //увеличение стоимости
             shopItems[index].levelOfItems++;
+
         }
     
         else print("Не хватает МурМонет");
