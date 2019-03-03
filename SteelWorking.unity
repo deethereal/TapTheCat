@@ -148,8 +148,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90.02801}
   m_AnchorMin: {x: 0.5, y: 0.11040626}
   m_AnchorMax: {x: 0.5, y: 0.11040626}
-  m_AnchoredPosition: {x: -0.000049591064, y: -202.02002}
-  m_SizeDelta: {x: 408.63, y: 1919.8}
+  m_AnchoredPosition: {x: 0.0034993, y: -187.04004}
+  m_SizeDelta: {x: 378.7, y: 1919.8}
   m_Pivot: {x: 0.49999985, y: 0.50000006}
 --- !u!114 &195532991
 MonoBehaviour:
@@ -171,7 +171,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.29523838, g: 0.20185119, b: 0.6792453, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -192,7 +192,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 519420030}
-        m_MethodName: ShopPan_ShowAndHide
+        m_MethodName: showShopPan
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -337,12 +337,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 519420030}
-        m_MethodName: startBonusTimer
+        m_MethodName: BuyBttn
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -399,7 +399,7 @@ GameObject:
   - component: {fileID: 244432340}
   - component: {fileID: 244432339}
   m_Layer: 5
-  m_Name: Text
+  m_Name: bTTN3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -793,24 +793,61 @@ MonoBehaviour:
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67e4ce64fc94aed408d6510d8cc6491d, type: 3}
+  m_Script: {fileID: 11500000, guid: 73062d9940e60134ea676ae0c3ec535e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   scoreText: {fileID: 889416268}
-  bonusTime:
-  - 30
-  SHOP: {fileID: 424585945}
-  shopBonuses: 01000000
-  shopCosts: 1400000064000000
-  ShopButtons:
-  - {fileID: 1741973884}
-  - {fileID: 641706666}
-  - {fileID: 206320018}
-  cost: 0
-  shopButtnsText:
+  shopItems:
+  - name: "\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0435 \u043A\u043B\u0438\u043A\u0430"
+    cost: 20
+    bonusIncrease: 1
+    levelOfItems: 0
+    needCostMultiplier: 1
+    costMultiplier: 2
+    itsItemPerSec: 0
+    bonusPerSec: 0
+    bonusCounter: 0
+    itsBonus: 0
+    itemMultiplier: 0
+    itemIndex: 0
+    timeOfBonus: 0
+  - name: "\u0410\u0412\u0422\u041E-\u041A\u041B\u0418\u041A"
+    cost: 100
+    bonusIncrease: 0
+    levelOfItems: 0
+    needCostMultiplier: 1
+    costMultiplier: 2
+    itsItemPerSec: 1
+    bonusPerSec: 1
+    bonusCounter: 0
+    itsBonus: 0
+    itemMultiplier: 0
+    itemIndex: 0
+    timeOfBonus: 0
+  - name: "\u0411\u041E\u041D\u0423\u0421"
+    cost: 150
+    bonusIncrease: 0
+    levelOfItems: 0
+    needCostMultiplier: 0
+    costMultiplier: 0
+    itsItemPerSec: 0
+    bonusPerSec: 0
+    bonusCounter: 0
+    itsBonus: 1
+    itemMultiplier: 2
+    itemIndex: 1
+    timeOfBonus: 10
+  shopItemsText:
   - {fileID: 1572665541}
   - {fileID: 563488016}
   - {fileID: 244432340}
+  shopBttns:
+  - {fileID: 1741973884}
+  - {fileID: 641706666}
+  - {fileID: 206320018}
+  shopPan: {fileID: 424585945}
+  scoreIncrease: 1
+  cost: 0
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -837,7 +874,7 @@ Camera:
   far clip plane: 20
   field of view: 60
   orthographic: 1
-  orthographic size: 4.5581117
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -850,7 +887,7 @@ Camera:
   m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 0
+  m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!4 &519420032
@@ -861,8 +898,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.07, y: 1.02, z: -10}
-  m_LocalScale: {x: 0.09, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -880,7 +917,7 @@ GameObject:
   - component: {fileID: 563488016}
   - component: {fileID: 563488015}
   m_Layer: 5
-  m_Name: Text
+  m_Name: Bttn2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1059,7 +1096,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 519420030}
-        m_MethodName: PerpetualMotion
+        m_MethodName: BuyBttn
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1261,7 +1298,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.92855203, b: 0, a: 1}
+  m_Color: {r: 1, g: 0.96040773, b: 0, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1270,7 +1307,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 283
+    m_FontSize: 218
     m_FontStyle: 3
     m_BestFit: 0
     m_MinSize: 10
@@ -1324,8 +1361,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -7, y: 0}
-  m_SizeDelta: {x: 14, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &987946712
 MonoBehaviour:
@@ -1340,7 +1377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.056114297, g: 0.22648393, b: 0.9150943, a: 0.392}
+  m_Color: {r: 0.09838911, g: 0.30466667, b: 0.31132078, a: 0.392}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1414,7 +1451,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 0.995364, b: 0.07075471, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1456,7 +1493,7 @@ GameObject:
   - component: {fileID: 1572665541}
   - component: {fileID: 1572665540}
   m_Layer: 5
-  m_Name: Text
+  m_Name: Bttn1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1478,7 +1515,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00012207031, y: -0.00015258789}
+  m_AnchoredPosition: {x: -0.00012207031, y: 0}
   m_SizeDelta: {x: -0.00018311, y: 0.000061035}
   m_Pivot: {x: 0.5, y: 0.50000006}
 --- !u!114 &1572665540
@@ -1636,7 +1673,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 519420030}
-        m_MethodName: ShopBttn_addbonus
+        m_MethodName: BuyBttn
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1744,7 +1781,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 186
+    m_FontSize: 189
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 0
