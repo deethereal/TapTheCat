@@ -10,7 +10,6 @@ public class Game2_0 : MonoBehaviour
 {
     [Header("Текст отвечающий за отоброжение очков")]
     public Text scoreText;
-    public Text scoreText1;
     [Header("Магазин")]
     public List<Item> shopItems = new List<Item>();
     public Text[] shopItemsText;
@@ -20,9 +19,36 @@ public class Game2_0 : MonoBehaviour
     public GameObject shopPan;
 
     private int score;
-    public int scoreIncrease ; //боунс
+    public int scoreIncrease; //боунс
     public int cost;
+    private Save sv = new Save();
 
+
+    
+    private void Awake()
+    {
+        //PlayerPrefs.DeleteKey("SV"); //очистка сохр.
+        if (PlayerPrefs.HasKey("SV"))
+        {
+             
+            sv = JsonUtility.FromJson<Save>(PlayerPrefs.GetString("SV"));
+            score = sv.score;
+            for (int i = 0; i< shopItems.Count; i++)
+            {
+                shopItems[i].levelOfItem = sv.levelOfItem[i];
+                shopItems[i].bonusCounter = sv.bonusCounter[i];
+                if (shopItems[i].needCostMultiplier)
+                {
+                    shopItems[i].cost *= (int)Mathf.Pow(shopItems[i].costMultiplier, shopItems[i].levelOfItem);
+                }
+                if (shopItems[i].bonusIncrease != 0)
+                {
+                    scoreIncrease += (int)Mathf.Pow(shopItems[i].bonusIncrease, shopItems[i].levelOfItem);
+                }
+            }
+
+        }
+    }
     private void Start()
     {
         updateCosts(); //обновление текста
@@ -33,7 +59,7 @@ public class Game2_0 : MonoBehaviour
     private void Update() //очки
     {
         scoreText.text = score + "\n МурМонет";
-        scoreText1.text = score + " ";
+        
         if (score >= shopItems[0].cost)
         {
             shopBttns[0].interactable = true;
@@ -50,7 +76,7 @@ public class Game2_0 : MonoBehaviour
         {
             shopBttns[1].interactable = false;
         }
-        if (score >= cost && shopItems[1].bonusCounter != 0 )
+        if (score >= cost && shopItems[1].bonusCounter != 0 ) //не работает:)
         {
             shopBttns[2].interactable = true;
         }
@@ -81,7 +107,7 @@ public class Game2_0 : MonoBehaviour
 
             score -= shopItems[index].cost;
             if (shopItems[index].needCostMultiplier) shopItems[index].cost *= shopItems[index].costMultiplier; //увеличение стоимости
-            shopItems[index].levelOfItems++;
+            shopItems[index].levelOfItem++;
 
         }
     
@@ -134,6 +160,18 @@ public class Game2_0 : MonoBehaviour
     {
         score += scoreIncrease; //клик
     }
+    private  void OnApplicationQuit() //void OnApplicationPause() для Андроида
+    {
+        sv.score = score;
+        sv.levelOfItem = new int[shopItems.Count]; //~кол-во кнопок в магазине
+        sv.bonusCounter = new int[shopItems.Count];
+        for (int i = 0; i < shopItems.Count; i++)
+        {
+            sv.levelOfItem[i] = shopItems[i].levelOfItem;
+            sv.bonusCounter[i] = shopItems[i].bonusCounter;
+            PlayerPrefs.SetString("SV", JsonUtility.ToJson(sv));
+        }
+    }
 }
 
 [Serializable]
@@ -146,7 +184,7 @@ public class Item
     [Tooltip("Текущий бонус к клику")]
     public int bonusIncrease;
     [HideInInspector]
-    public int levelOfItems; //lvl товара
+    public int levelOfItem; //lvl товара
     [Space]
     [Tooltip("Нужен ли множитель для цены?")]
     public bool needCostMultiplier;
@@ -168,4 +206,12 @@ public class Item
     public int itemIndex;
     [Tooltip("Длительность бонуса")]
     public float timeOfBonus;
+}
+
+[Serializable]
+public class Save
+{
+    public int score;
+    public int[] levelOfItem;
+    public int[] bonusCounter;
 }
