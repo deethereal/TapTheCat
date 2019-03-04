@@ -10,9 +10,9 @@ public class Game2_0 : MonoBehaviour
 {
     [Header("Текст отвечающий за отоброжение очков")]
     public Text scoreText;
+    public Text scoreText1;
     [Header("Магазин")]
     public List<Item> shopItems = new List<Item>();
-    [Header("Текст на кнопках товара")]
     public Text[] shopItemsText;
     [Header("Кнопки Товаров")]
     public Button[] shopBttns;
@@ -33,6 +33,7 @@ public class Game2_0 : MonoBehaviour
     private void Update() //очки
     {
         scoreText.text = score + "\n МурМонет";
+        scoreText1.text = score + " ";
         if (score >= shopItems[0].cost)
         {
             shopBttns[0].interactable = true;
@@ -49,7 +50,7 @@ public class Game2_0 : MonoBehaviour
         {
             shopBttns[1].interactable = false;
         }
-        if (score >= cost && shopItems[1].bonusCounter != 0)
+        if (score >= cost && shopItems[1].bonusCounter != 0 )
         {
             shopBttns[2].interactable = true;
         }
@@ -107,7 +108,7 @@ public class Game2_0 : MonoBehaviour
             for (int i =0; i<shopItems.Count; i++)
             {
                 score += (shopItems[i].bonusCounter * shopItems[i].bonusPerSec); // инкрис тика в секунду
-                yield return new WaitForSeconds(1); //задержка
+                yield return new WaitForSeconds(0.33F); //задержка
 
             }
         }
