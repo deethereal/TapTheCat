@@ -22,7 +22,7 @@ public class Game2_0 : MonoBehaviour
     public int scoreIncrease; //боунс
     public int cost;
     private Save sv = new Save();
-
+    private int totalBonusePS;
 
     
     private void Awake()
@@ -45,12 +45,27 @@ public class Game2_0 : MonoBehaviour
                 {
                     scoreIncrease += (int)Mathf.Pow(shopItems[i].bonusIncrease, shopItems[i].levelOfItem);
                 }
+                    totalBonusePS += shopItems[i].bonusPerSec*shopItems[i].bonusCounter;
+                
             }
-
+        DateTime dt = new DateTime(sv.date[0], sv.date[1], sv.date[2], sv.date[3], sv.date[4], sv.date[5]);
+        TimeSpan ts = DateTime.Now - dt;
+            if (ts.TotalSeconds >= 0)
+            {
+                int offlinebonus = (int)ts.TotalSeconds * totalBonusePS;
+                score += offlinebonus;
+                print("Пока вас не было, вы получили " + offlinebonus + " МурМонет");
+            }
+            else
+            {
+                print("Читерить плохо, ты лишаешься всех МурМонет!");
+                score = 0;
+            }
         }
     }
     private void Start()
     {
+        
         updateCosts(); //обновление текста
         StartCoroutine(BonusPerSec()); //тик в секунду
 
@@ -160,7 +175,26 @@ public class Game2_0 : MonoBehaviour
     {
         score += scoreIncrease; //клик
     }
-    private  void OnApplicationQuit() //void OnApplicationPause() для Андроида
+#if UNITY_ANDROID && !UNITY_EDITOR
+    private void OnApplicationPause(bool pause) // для Андроида    
+    {
+        if (pause)
+        {
+            sv.score = score;
+            sv.levelOfItem = new int[shopItems.Count]; //~кол-во кнопок в магазине
+            sv.bonusCounter = new int[shopItems.Count];
+            for (int i = 0; i < shopItems.Count; i++)
+            {
+                sv.levelOfItem[i] = shopItems[i].levelOfItem;
+                sv.bonusCounter[i] = shopItems[i].bonusCounter;
+            }
+            sv.date[0] = DateTime.Now.Year; sv.date[1] = DateTime.Now.Month; sv.date[2] = DateTime.Now.Day;
+            sv.date[3] = DateTime.Now.Hour; sv.date[4] = DateTime.Now.Minute; sv.date[5] = DateTime.Now.Second;
+            PlayerPrefs.SetString("SV", JsonUtility.ToJson(sv));
+        }
+    }
+#else   
+    private void OnApplicationQuit() //
     {
         sv.score = score;
         sv.levelOfItem = new int[shopItems.Count]; //~кол-во кнопок в магазине
@@ -169,9 +203,13 @@ public class Game2_0 : MonoBehaviour
         {
             sv.levelOfItem[i] = shopItems[i].levelOfItem;
             sv.bonusCounter[i] = shopItems[i].bonusCounter;
-            PlayerPrefs.SetString("SV", JsonUtility.ToJson(sv));
+            
         }
+        sv.date[0] = DateTime.Now.Year; sv.date[1] = DateTime.Now.Month; sv.date[2] = DateTime.Now.Day;
+        sv.date[3] = DateTime.Now.Hour; sv.date[4] = DateTime.Now.Minute; sv.date[5] = DateTime.Now.Second;
+        PlayerPrefs.SetString("SV", JsonUtility.ToJson(sv));
     }
+#endif
 }
 
 [Serializable]
@@ -214,4 +252,5 @@ public class Save
     public int score;
     public int[] levelOfItem;
     public int[] bonusCounter;
+    public int[] date = new int[6];
 }
