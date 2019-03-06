@@ -23,11 +23,15 @@ public class Game2_0 : MonoBehaviour
     public int cost;
     private Save sv = new Save();
     private int totalBonusePS;
+    public float time;
+   // public bool abonus;
+    public int obonustime;
 
-    
+
+
     private void Awake()
     {
-        //PlayerPrefs.DeleteKey("SV"); //очистка сохр.
+       // PlayerPrefs.DeleteKey("SV"); //очистка сохр.
         if (PlayerPrefs.HasKey("SV"))
         {
              
@@ -52,9 +56,11 @@ public class Game2_0 : MonoBehaviour
         TimeSpan ts = DateTime.Now - dt;
             if (ts.TotalSeconds >= 0)
             {
-                int offlinebonus = (int)ts.TotalSeconds * totalBonusePS;
-                score += offlinebonus;
-                print("Пока вас не было, вы получили " + offlinebonus + " МурМонет");
+                
+                    int offlinebonus = ((int)ts.TotalSeconds-sv.obonustime) * totalBonusePS + sv.obonustime*totalBonusePS*2;
+                    score += offlinebonus;
+                   print("Пока вас не было, вы получили " + offlinebonus + " МурМонет");
+                
             }
             else
             {
@@ -161,11 +167,23 @@ public class Game2_0 : MonoBehaviour
     shopBttns[index].interactable = false;
     shopItems[shopItems[index].itemIndex].bonusPerSec *= 2;
     scoreIncrease *= 2;
+    
     yield return new WaitForSeconds(time);
     shopBttns[index].interactable = true;
     shopItems[shopItems[index].itemIndex].bonusPerSec /= 2;
     scoreIncrease /= 2;
+    
 
+    }
+    IEnumerator activeTime(float time)
+    {
+        obonustime = 0;
+        while (obonustime != (int)time)
+        {
+            obonustime++;
+            yield return new WaitForSeconds(0.33F);
+        }
+        
     }
     public void showShopPan()
     {
@@ -199,6 +217,9 @@ public class Game2_0 : MonoBehaviour
         sv.score = score;
         sv.levelOfItem = new int[shopItems.Count]; //~кол-во кнопок в магазине
         sv.bonusCounter = new int[shopItems.Count];
+        sv.obonustime = (int)time - obonustime;
+       
+
         for (int i = 0; i < shopItems.Count; i++)
         {
             sv.levelOfItem[i] = shopItems[i].levelOfItem;
@@ -253,4 +274,6 @@ public class Save
     public int[] levelOfItem;
     public int[] bonusCounter;
     public int[] date = new int[6];
+    //public bool abonus;
+    public int obonustime;
 }
