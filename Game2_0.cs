@@ -31,7 +31,7 @@ public class Game2_0 : MonoBehaviour
 
     private void Awake()
     {
-        PlayerPrefs.DeleteKey("SV"); //очистка сохр.
+        //PlayerPrefs.DeleteKey("SV"); //очистка сохр.
         if (PlayerPrefs.HasKey("SV"))
         {
 
@@ -57,7 +57,7 @@ public class Game2_0 : MonoBehaviour
             if (ts.TotalSeconds >= 0)
             {
 
-                int offlinebonus = ((int)ts.TotalSeconds - sv.obonustime) * totalBonusePS + sv.obonustime * totalBonusePS * 2; //вторая часть
+                int offlinebonus = Math.Abs(((int)ts.TotalSeconds - sv.obonustime) * totalBonusePS) + sv.obonustime * totalBonusePS * 2; //вторая часть
                 score += offlinebonus;
                 print(((int)ts.TotalSeconds - sv.obonustime) * totalBonusePS + "  " + sv.obonustime);
                 print("Пока вас не было, вы получили " + offlinebonus + " МурМонет");
@@ -99,7 +99,7 @@ public class Game2_0 : MonoBehaviour
         {
             shopBttns[1].interactable = false;
         }
-        if (score >= cost && shopItems[1].bonusCounter != 0) //не работает:)
+        if (score >= cost && shopItems[1].bonusCounter != 0) // работает:)
         {
             shopBttns[2].interactable = true;
         }
@@ -131,9 +131,13 @@ public class Game2_0 : MonoBehaviour
                 cost = shopItems[2].cost * shopItems[1].bonusCounter;
             }
 
-            else scoreIncrease += shopItems[index].bonusIncrease; //увеличение клика 
+            else
+            {
+                scoreIncrease += shopItems[index].bonusIncrease; //увеличение клика 
+                cost = shopItems[2].cost * shopItems[1].bonusCounter;
+            }
 
-            score -= shopItems[index].cost;
+                score -= shopItems[index].cost;
             if (shopItems[index].needCostMultiplier) shopItems[index].cost *= shopItems[index].costMultiplier; //увеличение стоимости
             shopItems[index].levelOfItem++;
 
