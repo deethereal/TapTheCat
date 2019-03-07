@@ -26,7 +26,7 @@ public class Game2_0 : MonoBehaviour
     //public float time;
     // public bool abonus;
     public int obonustime;
-
+    public bool flag;
 
 
     private void Awake()
@@ -75,13 +75,13 @@ public class Game2_0 : MonoBehaviour
 
         updateCosts(); //обновление текста
         StartCoroutine(BonusPerSec()); //тик в секунду
-
+        flag = true;
 
     }
     private void Update() //очки
     {
         scoreText.text = score + "\n МурМонет";
-        
+
         print(cost);
         if (score >= shopItems[0].cost)
         {
@@ -99,7 +99,7 @@ public class Game2_0 : MonoBehaviour
         {
             shopBttns[1].interactable = false;
         }
-        if (score >= cost && shopItems[1].bonusCounter != 0) // работает:)
+        if (score >= cost && shopItems[1].bonusCounter != 0 && flag) // работает:)
         {
             shopBttns[2].interactable = true;
         }
@@ -137,7 +137,7 @@ public class Game2_0 : MonoBehaviour
                 cost = shopItems[2].cost * shopItems[1].bonusCounter;
             }
 
-                score -= shopItems[index].cost;
+            score -= shopItems[index].cost;
             if (shopItems[index].needCostMultiplier) shopItems[index].cost *= shopItems[index].costMultiplier; //увеличение стоимости
             shopItems[index].levelOfItem++;
 
@@ -176,9 +176,11 @@ public class Game2_0 : MonoBehaviour
     IEnumerator BonusTimer(float time, int index)
     {
         shopBttns[index].interactable = false;
+        flag = false;
         shopItems[shopItems[index].itemIndex].bonusPerSec *= 2;
         scoreIncrease *= 2;
         yield return new WaitForSeconds(time);
+        flag = true;
         shopBttns[index].interactable = true;
         shopItems[shopItems[index].itemIndex].bonusPerSec /= 2;
         scoreIncrease /= 2;
