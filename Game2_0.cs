@@ -1,9 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-
 
 
 public class Game2_0 : MonoBehaviour
@@ -12,12 +11,14 @@ public class Game2_0 : MonoBehaviour
     public Text scoreText;
     [Header("Магазин")]
     public List<Item> shopItems = new List<Item>();
+    public List<Item> cats = new List<Item>();
     public Text[] shopItemsText;
     [Header("Кнопки Товаров")]
     public Button[] shopBttns;
+    public Button[] catBtnns;
     [Header("Панелька магазина")]
     public GameObject shopPan;
-
+    public GameObject shopCat;
     private int score;
     public int scoreIncrease; //боунс
     public int cost;
@@ -28,15 +29,43 @@ public class Game2_0 : MonoBehaviour
     public int obonustime;
     public bool flag;
 
-
+   
     private void Awake()
     {
-        //PlayerPrefs.DeleteKey("SV"); //очистка сохр.
+        score = 0;
+      
+
+        sv = JsonUtility.FromJson<Save>(PlayerPrefs.GetString("SV"));
+        shopItems[1].bonusCounter = sv.bonusCounter[1];
+        totalBonusePS += shopItems[1].bonusPerSec * shopItems[1].bonusCounter;
+       
+        DateTime dt = new DateTime(sv.date[0], sv.date[1], sv.date[2], sv.date[3], sv.date[4], sv.date[5]);
+        TimeSpan ts = DateTime.Now - dt;
+        
+        if (ts.TotalSeconds >= 0)
+        {
+
+            int offlinebonus = Math.Abs((int)ts.TotalSeconds * totalBonusePS);
+            score += offlinebonus;
+           
+            print("Пока вас не было, вы получили " + offlinebonus + " МурМонет");
+           
+
+        }
+        else
+        {
+            print("Читерить плохо, ты лишаешься всех МурМонет!");
+            PlayerPrefs.DeleteKey("SV"); //- очистка сохр.
+            shopItems[1].bonusCounter = 0;
+           
+        }
+       // PlayerPrefs.DeleteKey("SV"); //очистка сохр.
         if (PlayerPrefs.HasKey("SV"))
         {
 
-            sv = JsonUtility.FromJson<Save>(PlayerPrefs.GetString("SV"));
-            score = sv.score;
+           
+            score += sv.score;
+           
             for (int i = 0; i < shopItems.Count; i++)
             {
                 shopItems[i].levelOfItem = sv.levelOfItem[i];
@@ -52,22 +81,7 @@ public class Game2_0 : MonoBehaviour
                 totalBonusePS += shopItems[i].bonusPerSec * shopItems[i].bonusCounter;
 
             }
-            DateTime dt = new DateTime(sv.date[0], sv.date[1], sv.date[2], sv.date[3], sv.date[4], sv.date[5]);
-            TimeSpan ts = DateTime.Now - dt;
-            if (ts.TotalSeconds >= 0)
-            {
-
-                int offlinebonus = Math.Abs(((int)ts.TotalSeconds - sv.obonustime) * totalBonusePS) + sv.obonustime * totalBonusePS * 2; //вторая часть
-                score += offlinebonus;
-                print(((int)ts.TotalSeconds - sv.obonustime) * totalBonusePS + "  " + sv.obonustime);
-                print("Пока вас не было, вы получили " + offlinebonus + " МурМонет");
-
-            }
-            else
-            {
-                print("Читерить плохо, ты лишаешься всех МурМонет!");
-                PlayerPrefs.DeleteKey("SV"); //- очистка сохр.
-            }
+            
         }
     }
     private void Start()
@@ -82,7 +96,7 @@ public class Game2_0 : MonoBehaviour
     {
         scoreText.text = score + "\n МурМонет";
 
-        print(cost);
+        
         if (score >= shopItems[0].cost)
         {
             shopBttns[0].interactable = true;
@@ -145,6 +159,15 @@ public class Game2_0 : MonoBehaviour
 
         else print("Не хватает МурМонет");
         updateCosts();
+    }
+    public void BuyCats(int index)
+    {
+        if (score >= cats[index].cost)
+            {
+            score -= cats[index].cost;
+            cats[index].av = false;
+
+            }
     }
     private void updateCosts()
     {
@@ -244,11 +267,17 @@ public class Game2_0 : MonoBehaviour
         PlayerPrefs.SetString("SV", JsonUtility.ToJson(sv));
     }
 #endif
+    public void showCatPan()
+    {
+        shopCat.SetActive(!shopCat.activeSelf);
+    }
 }
 
 [Serializable]
 public class Item
 {
+    [Tooltip("доступность кота")]
+    public bool av;
     [Tooltip("Название используемое на кпоке")]
     public string name;
     [Tooltip("Цена товара")]
